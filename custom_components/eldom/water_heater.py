@@ -128,8 +128,6 @@ class EldomWaterHeaterEntity(WaterHeaterEntity, CoordinatorEntity):
     @property
     def supported_features(self) -> WaterHeaterEntityFeature:
         """Return the list of supported features."""
-        if self._eldom_boiler.type == DEVICE_TYPE_NATURELA_BOILER_ELDOM:
-            return SUPPORT_FLAGS_ELDOM_HEATER_NO_TEMP
         return SUPPORT_FLAGS_ELDOM_HEATER
 
     @property
