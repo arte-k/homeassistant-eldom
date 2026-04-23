@@ -25,11 +25,14 @@ MIN_TEMP = 35
 NATURELA_MAX_TEMP = 75
 NATURELA_MIN_TEMP = 8
 
+STATE_TIMERS = "timers"
+
 ELDOM_OPERATION_MODES = {
     0: STATE_OFF,
     1: STATE_ELECTRIC,  # Matches: "Heating"
     2: STATE_ECO,  # Matches: "Smart"
     3: STATE_HIGH_DEMAND,  # Matches: "Study"
+    4: STATE_TIMERS,  # Matches: "Timers"
 }
 
 IOT_ELDOM_OPERATION_MODES = {
@@ -44,6 +47,7 @@ NATURELA_OPERATION_MODES = {
     0: STATE_OFF,
     1: STATE_ELECTRIC,  # Matches: "On"
     2: STATE_ECO,  # Matches: "Holiday"
+    4: STATE_TIMERS,  # Matches: "Timers"
 }
 
 _LOGGER = logging.getLogger(__name__)
@@ -209,11 +213,19 @@ class FlatEldomBoiler(EldomBoiler):
         return MIN_TEMP
 
     @property
+    def left_chamber_temperature(self) -> float:
+        """Retrieve the left chamber temperature (STL)."""
+        return self._flat_boiler_details.STL_Temp
+
+    @property
+    def right_chamber_temperature(self) -> float:
+        """Retrieve the right chamber temperature (FT)."""
+        return self._flat_boiler_details.FT_Temp
+
+    @property
     def current_temperature(self) -> float:
         """Retrieve the boiler's current temperature."""
-        left_chamber = self._flat_boiler_details.STL_Temp
-        right_chamber = self._flat_boiler_details.FT_Temp
-        return (left_chamber + right_chamber) / 2
+        return (self.left_chamber_temperature + self.right_chamber_temperature) / 2
 
     @property
     def target_temperature(self) -> float:
